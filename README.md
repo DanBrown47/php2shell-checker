@@ -24,7 +24,7 @@ Check a website:
 node phpcheck.js "https://example.com"
 ```
 
-Check local CLI PHP, which may differ from the version serving the site:
+Check the local CLI PHP
 
 ```sh
 node phpcheck.js --local
