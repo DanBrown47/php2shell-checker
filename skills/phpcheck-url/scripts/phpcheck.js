@@ -19,6 +19,11 @@ function patchStatus(version) {
   if (!match) return 'unknown'
   const cutoff = VULNERABLE_THROUGH[`${Number(match[1])}.${Number(match[2])}`]
   if (cutoff === undefined) return 'unknown'
+  // Ubuntu/Debian archive builds backport fixes without changing the upstream
+  // version, so only the full package version shows patch status. The Sury
+  // PPA follows upstream releases, so its upstream version is meaningful.
+  const suffix = match[4] || ''
+  if (/ubuntu|[~+]deb\d/i.test(suffix) && !/deb\.sury\.org/i.test(suffix)) return 'unknown'
   if (Number(match[3]) <= cutoff) return 'vulnerable'
   // A development build of the next patch is not evidence of a stable fix.
   if (/(?:^|[-+~.])(?:dev|alpha|beta|rc)/i.test(match[4] || '')) return 'unknown'

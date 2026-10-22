@@ -52,6 +52,7 @@ for (const [version, status] of [
   ['8.4.26', 'vulnerable'],
   ['8.4.27', 'ok'],
   ['8.4.27-1+ubuntu24.04.1+deb.sury.org+1', 'ok'],
+  ['8.3.6-0ubuntu0.24.04.6', 'unknown'],
   ['8.4.27RC1', 'unknown'],
   ['9.0.0', 'unknown'],
 ]) {
@@ -115,7 +116,17 @@ for (const version of ['8.6.0', '9.0.0', '8.4', 'not-a-version', '8.4.27RC1', '8
   })
 }
 
-for (const [version, status] of [['8.4.26-1ubuntu1', 'vulnerable'], ['8.4.27-1ubuntu1', 'ok']]) {
+for (const [version, status] of [
+  // Archive builds carry backported fixes under the same upstream version.
+  ['8.3.6-0ubuntu0.24.04.6', 'unknown'],
+  ['8.1.2-1ubuntu2.20', 'unknown'],
+  ['8.4.26-1ubuntu1', 'unknown'],
+  ['8.2.29-1~deb12u1', 'unknown'],
+  ['8.2.29-1+deb12u1', 'unknown'],
+  // The Sury PPA tracks upstream point releases.
+  ['8.4.26-1+ubuntu24.04.1+deb.sury.org+1', 'vulnerable'],
+  ['8.4.27-1+ubuntu24.04.1+deb.sury.org+1', 'ok'],
+]) {
   test(`distribution suffix PHP/${version} => ${status}`, async t => {
     const url = await serve(t, (req, res) => { res.setHeader('X-Powered-By', `PHP/${version}`); res.end() })
     check(await run([url, '--json']), status, version)

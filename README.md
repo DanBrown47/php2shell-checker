@@ -39,7 +39,7 @@ node phpcheck.js --local
 | --- | --- | --- |
 | `OK` | `0` | Stable PHP patch version above the embedded cutoff for a listed major/minor branch. |
 | `VULNERABLE` | `1` | PHP version at or below the embedded cutoff for that branch. |
-| `UNKNOWN` | `3` | No PHP version or response, an unrecognized version/branch, or a newer prerelease build. |
+| `UNKNOWN` | `3` | No PHP version or response, an unrecognized version/branch, a newer prerelease build, or an Ubuntu/Debian archive build. |
 
 Use `--json` for machine-readable output (`patch_status` is `ok`, `vulnerable`,
 or `unknown`). Invalid arguments exit with code `2`.
@@ -64,6 +64,14 @@ inspect response bodies. Missing or hidden PHP headers return `UNKNOWN`.
 It does not independently verify a security fix. Check the versions against
 the official PHP security release. Headers can be hidden or changed, and distribution backports may
 not change the upstream version. `UNKNOWN` does not mean the target is patched!
+
+Ubuntu and Debian archive builds (for example `8.3.6-0ubuntu0.24.04.6` or
+`8.2.29-1~deb12u1`) return `UNKNOWN`: their fixes are backported under the same
+upstream version. On those hosts, compare the full package version
+(`dpkg-query -W 'php*-cli'`) with the Ubuntu or Debian security advisory.
+Builds from the Sury PPA follow upstream releases and are checked normally.
+RHEL-family builds usually hide the package revision, so the checker cannot
+tell them apart from upstream builds.
 
 ## Contributing
 
